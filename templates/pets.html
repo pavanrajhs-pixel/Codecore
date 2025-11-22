@@ -39,6 +39,9 @@
         {% if pet.is_for_mating %}
           <button class="btn mate-btn" type="button">Request Mate</button>
         {% endif %}
+
+        <p><strong>Address:</strong> {{ pet.address }}</p>
+        
       </div>
     </div>
     {% endfor %}

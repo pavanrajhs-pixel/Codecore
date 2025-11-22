@@ -23,7 +23,7 @@
 <h3>Add Pet</h3>
 <form method="post"
       action="{{ url_for('add_pet') }}"
-      enctype="multipart/form-data">  {# 🔴 important for file upload #}
+      enctype="multipart/form-data">
   <input name="name" placeholder="Name" required>
 
   <select name="species">
@@ -39,28 +39,34 @@
     <option>female</option>
   </select>
 
-  <label>
-    <input type="checkbox" name="is_for_adoption"> For Adoption
-  </label>
-  <label>
-    <input type="checkbox" name="is_for_mating"> For Mating
-  </label>
+  <!-- Checkboxes on the same line -->
+  <div style="display:flex; gap:20px; align-items:center; margin:8px 0;">
+    <label style="display:flex; align-items:center; gap:5px;">
+      <input type="checkbox" name="is_for_adoption"> For Adoption
+    </label>
+
+    <label style="display:flex; align-items:center; gap:5px;">
+      <input type="checkbox" name="is_for_mating"> For Mating
+    </label>
+  </div>
+
+  <textarea name="address" placeholder="Enter pet's location/address (required)" required></textarea>
 
   <textarea name="health_notes" placeholder="Health / vaccination details"></textarea>
 
-  <!-- 🔹 New: Pet Photo upload -->
   <label for="image">Pet Photo</label>
   <input type="file" name="image" id="image" accept="image/*">
 
   <button type="submit">Save Pet</button>
 </form>
 
-<h3>Your Vet Appointments</h3>
-<ul>
-  {% for a in appointments %}
-    <li>{{ a.pet.name }} with {{ a.vet.name }} at {{ a.appointment_time }}</li>
-  {% else %}
-    <li>No appointments yet.</li>
-  {% endfor %}
-</ul>
+{% if appointments %}
+  <h3>Your Vet Appointments</h3>
+  <ul>
+    {% for a in appointments %}
+      <li>{{ a.pet.name }} with {{ a.vet.name }} at {{ a.appointment_time }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 {% endblock %}

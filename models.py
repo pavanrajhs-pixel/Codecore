@@ -27,6 +27,7 @@ class Pet(db.Model):
     name = db.Column(db.String(120), nullable=False)
     species = db.Column(db.String(50), nullable=False)  # dog / cat
     image = db.Column(db.String(200))  # filename of uploaded image
+    address = db.Column(db.String(255))  # pet exact location / address
 
     breed = db.Column(db.String(120))
     age = db.Column(db.Integer)

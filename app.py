@@ -1,27 +1,39 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
 import os
+import re
+from datetime import datetime
+
+from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from werkzeug.utils import secure_filename
 
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from datetime import datetime
-from flask import Flask, render_template, redirect, url_for, request, flash, abort
+from flask_login import (
+    LoginManager,
+    login_user,
+    login_required,
+    logout_user,
+    current_user,
+)
 
 from config import Config
 from models import db, User, Pet, AdoptionRequest, MatingRequest, VetAppointment
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# File upload config
+# ------------- File upload config for pet images -------------
+
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "images", "pets")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
+
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+# ------------- DB / login setup -------------
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -62,6 +74,7 @@ def create_admin_and_vet():
     db.session.commit()
 
 
+# ------------- Routes -------------
 
 @app.route("/")
 def index():
@@ -77,13 +90,40 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
         role = request.form.get("role", "owner")
+        city = request.form.get("city")  # if you added city in your register form
 
+        # Check if email already exists
         if User.query.filter_by(email=email).first():
             flash("Email already registered", "danger")
             return redirect(url_for("register"))
 
+        # --------- STRONG PASSWORD VALIDATION HERE ----------
+        # Must contain:
+        #   - at least 8 characters
+        #   - at least one lowercase letter
+        #   - at least one uppercase letter
+        #   - at least one digit
+        #   - at least one special character
+        password_pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+
+        if not re.match(password_pattern, password):
+            flash(
+                "Password must be at least 8 characters and include "
+                "uppercase, lowercase, number, and special character.",
+                "danger",
+            )
+            return redirect(url_for("register"))
+        # ----------------------------------------------------
+
         pw_hash = bcrypt.generate_password_hash(password).decode("utf-8")
-        user = User(name=name, email=email, password_hash=pw_hash, role=role)
+
+        user = User(
+            name=name,
+            email=email,
+            password_hash=pw_hash,
+            role=role,
+            city=city,  # remove this if your User model has no city
+        )
         db.session.add(user)
         db.session.commit()
 
@@ -122,13 +162,27 @@ def logout():
 @login_required
 def dashboard():
     pets = Pet.query.filter_by(owner_id=current_user.id).all()
-    upcoming_appointments = VetAppointment.query.filter_by(owner_id=current_user.id).all()
-    return render_template("dashboard.html", pets=pets, appointments=upcoming_appointments)
+    upcoming_appointments = VetAppointment.query.filter_by(
+        owner_id=current_user.id
+    ).all()
+
+    # Your own adoption requests (for tracking)
+    my_adoptions = AdoptionRequest.query.filter_by(
+        requester_id=current_user.id
+    ).all()
+
+    return render_template(
+        "dashboard.html",
+        pets=pets,
+        appointments=upcoming_appointments,
+        my_adoptions=my_adoptions,
+    )
 
 
 @app.route("/pets")
 @login_required
 def pets():
+    # simple version: show all pets
     all_pets = Pet.query.all()
     return render_template("pets.html", all_pets=all_pets)
 
@@ -144,8 +198,9 @@ def add_pet():
     is_for_adoption = "is_for_adoption" in request.form
     is_for_mating = "is_for_mating" in request.form
     health_notes = request.form.get("health_notes")
+    address = request.form.get("address")
 
-    # 🔹 Handle image upload
+    # Handle image upload
     image_file = request.files.get("image")
     image_filename = None
 
@@ -165,15 +220,15 @@ def add_pet():
         is_for_mating=is_for_mating,
         health_notes=health_notes,
         owner_id=current_user.id,
-        image=image_filename,  # 👈 store filename in DB
+        city=getattr(current_user, "city", None),
+        address=address,
+        image=image_filename,
     )
-
     db.session.add(pet)
     db.session.commit()
 
     flash("Pet added successfully", "success")
     return redirect(url_for("dashboard"))
-
 
 
 @app.route("/adopt/<int:pet_id>", methods=["POST"])
@@ -184,6 +239,7 @@ def adopt_pet(pet_id):
         pet_id=pet_id,
         requester_id=current_user.id,
         message=message,
+        status="pending",
     )
     db.session.add(req)
     db.session.commit()
@@ -198,7 +254,8 @@ def request_mating(pet_id):
 
     req = MatingRequest(
         pet_id=pet_id,
-        requester_pet_id=requester_pet_id
+        requester_pet_id=requester_pet_id,
+        status="pending",
     )
     db.session.add(req)
     db.session.commit()
@@ -233,12 +290,13 @@ def book_appointment():
         pet_id=pet_id,
         vet_id=vet_id,
         appointment_time=dt,
-        reason=reason
+        reason=reason,
     )
     db.session.add(appt)
     db.session.commit()
     flash("Appointment booked", "success")
     return redirect(url_for("appointments"))
+
 
 @app.route("/admin")
 @login_required
@@ -264,13 +322,15 @@ def admin_dashboard():
     )
 
 
+# ------------- CLI & app start -------------
+
 @app.cli.command("init-db")
 def init_db():
     with app.app_context():
         db.drop_all()
         db.create_all()
         create_admin_and_vet()
-        print("Database initialized with sample vet user.")
+        print("Database initialized with sample admin and vet users.")
 
 
 if __name__ == "__main__":
