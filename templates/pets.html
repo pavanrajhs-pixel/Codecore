@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="hero">
+    <div class="hero-title">Connecting Pets, Creating Families ❤️🐶🐱</div>
+    <div class="hero-subtitle">
+      Browse pets available for <strong>adoption</strong> and <strong>mating</strong>. Use this page in your demo as the core feature.
+    </div>
+  </div>
+
+  {% if all_pets|length == 0 %}
+    <p>No pets added yet. Use the add‑pet form to create some demo entries.</p>
+  {% else %}
+  <div class="pet-grid">
+    {% for pet in all_pets %}
+    <div class="pet-card">
+      <img src="{{ url_for('static', filename='images/pets/' ~ (pet.image or 'dog1.jpg')) }}" alt="{{ pet.name }}">
+      <h3>{{ pet.name }}</h3>
+      <p>{{ pet.species }} • {{ pet.breed }}</p>
+      <p class="pet-meta">
+        Age: {{ pet.age or 'N/A' }} |
+        Gender: {{ pet.gender or 'N/A' }}
+      </p>
+      <p class="pet-meta">
+        Owner: {{ pet.owner.name if pet.owner else 'Unknown' }}
+      </p>
+      <div>
+        {% if pet.is_for_adoption %}
+          <span class="badge adopt">For Adoption</span>
+        {% endif %}
+        {% if pet.is_for_mating %}
+          <span class="badge mate">For Mating</span>
+        {% endif %}
+      </div>
+      <div class="actions">
+        {% if pet.is_for_adoption %}
+          <button class="btn adopt-btn" type="button">Adopt</button>
+        {% endif %}
+        {% if pet.is_for_mating %}
+          <button class="btn mate-btn" type="button">Request Mate</button>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

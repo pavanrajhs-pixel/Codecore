@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2>Admin Panel 🛡</h2>
+  <p style="font-size:0.9rem;opacity:0.8;">
+    Logged in as: <strong>{{ current_user.name }}</strong> ({{ current_user.role }})
+  </p>
+
+  <h3>Users</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="font-size:0.85rem;">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+    </tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.role }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3 style="margin-top:20px;">Pets</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="font-size:0.85rem;">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Species</th>
+      <th>Breed</th>
+      <th>Owner</th>
+      <th>Adoption</th>
+      <th>Mating</th>
+    </tr>
+    {% for p in pets %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.species }}</td>
+      <td>{{ p.breed }}</td>
+      <td>{{ p.owner.name if p.owner else "Unknown" }}</td>
+      <td>{{ "Yes" if p.is_for_adoption else "No" }}</td>
+      <td>{{ "Yes" if p.is_for_mating else "No" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3 style="margin-top:20px;">Adoption Requests</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="font-size:0.85rem;">
+    <tr>
+      <th>ID</th>
+      <th>Pet</th>
+      <th>Requester</th>
+      <th>Created At</th>
+    </tr>
+    {% for r in adoptions %}
+    <tr>
+      <td>{{ r.id }}</td>
+      <td>{{ r.pet.name if r.pet else "?" }}</td>
+      <td>{{ r.requester.name if r.requester else "?" }}</td>
+      <td>{{ r.created_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3 style="margin-top:20px;">Mating Requests</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="font-size:0.85rem;">
+    <tr>
+      <th>ID</th>
+      <th>Pet</th>
+      <th>Requester</th>
+      <th>Created At</th>
+    </tr>
+    {% for r in matings %}
+    <tr>
+      <td>{{ r.id }}</td>
+      <td>{{ r.pet.name if r.pet else "?" }}</td>
+      <td>{{ r.requester.name if r.requester else "?" }}</td>
+      <td>{{ r.created_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3 style="margin-top:20px;">Vet Appointments</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="font-size:0.85rem;">
+    <tr>
+      <th>ID</th>
+      <th>Owner</th>
+      <th>Pet</th>
+      <th>Vet</th>
+      <th>Time</th>
+      <th>Reason</th>
+    </tr>
+    {% for a in appointments %}
+    <tr>
+      <td>{{ a.id }}</td>
+      <td>{{ a.owner.name if a.owner else "?" }}</td>
+      <td>{{ a.pet.name if a.pet else "?" }}</td>
+      <td>{{ a.vet.name if a.vet else "?" }}</td>
+      <td>{{ a.appointment_time }}</td>
+      <td>{{ a.reason }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

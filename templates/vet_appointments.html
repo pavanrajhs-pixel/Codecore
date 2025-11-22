@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Vet Appointments</h2>
+
+<ul>
+  {% for a in appointments %}
+    <li>
+      {{ a.pet.name }} – {{ a.owner.name }} with {{ a.vet.name }}
+      at {{ a.appointment_time }} | Reason: {{ a.reason }}
+    </li>
+  {% else %}
+    <li>No appointments yet.</li>
+  {% endfor %}
+</ul>
+
+{% if current_user.role == "owner" %}
+<h3>Book Appointment</h3>
+<form method="post" action="{{ url_for('book_appointment') }}">
+  <label>Pet</label>
+  <select name="pet_id">
+    {% for p in current_user.pets %}
+      <option value="{{ p.id }}">{{ p.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Vet</label>
+  <select name="vet_id">
+    {% for u in users %}
+      {% if u.role == 'vet' %}
+        <option value="{{ u.id }}">{{ u.name }} ({{ u.email }})</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+
+  <label>Time (YYYY-MM-DD HH:MM)</label>
+  <input type="text" name="appointment_time" placeholder="2025-11-21 15:30">
+
+  <label>Reason</label>
+  <textarea name="reason"></textarea>
+  <button type="submit">Book</button>
+</form>
+{% endif %}
+{% endblock %}

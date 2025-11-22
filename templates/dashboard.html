@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<h3>Your Pets</h3>
+<ul>
+  {% for pet in pets %}
+    <li>
+      {% if pet.image %}
+        <img src="{{ url_for('static', filename='images/pets/' ~ pet.image) }}"
+             alt="{{ pet.name }}"
+             style="width:60px;height:60px;object-fit:cover;border-radius:8px;margin-right:8px;vertical-align:middle;">
+      {% endif %}
+      <strong>{{ pet.name }}</strong> ({{ pet.species }}, {{ pet.breed }})
+      {% if pet.is_for_adoption %} - For Adoption{% endif %}
+      {% if pet.is_for_mating %} - For Mating{% endif %}
+    </li>
+  {% else %}
+    <li>No pets added yet.</li>
+  {% endfor %}
+</ul>
+
+<h3>Add Pet</h3>
+<form method="post"
+      action="{{ url_for('add_pet') }}"
+      enctype="multipart/form-data">  {# 🔴 important for file upload #}
+  <input name="name" placeholder="Name" required>
+
+  <select name="species">
+    <option value="dog">Dog</option>
+    <option value="cat">Cat</option>
+  </select>
+
+  <input name="breed" placeholder="Breed">
+  <input name="age" type="number" min="0" placeholder="Age">
+
+  <select name="gender">
+    <option>male</option>
+    <option>female</option>
+  </select>
+
+  <label>
+    <input type="checkbox" name="is_for_adoption"> For Adoption
+  </label>
+  <label>
+    <input type="checkbox" name="is_for_mating"> For Mating
+  </label>
+
+  <textarea name="health_notes" placeholder="Health / vaccination details"></textarea>
+
+  <!-- 🔹 New: Pet Photo upload -->
+  <label for="image">Pet Photo</label>
+  <input type="file" name="image" id="image" accept="image/*">
+
+  <button type="submit">Save Pet</button>
+</form>
+
+<h3>Your Vet Appointments</h3>
+<ul>
+  {% for a in appointments %}
+    <li>{{ a.pet.name }} with {{ a.vet.name }} at {{ a.appointment_time }}</li>
+  {% else %}
+    <li>No appointments yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

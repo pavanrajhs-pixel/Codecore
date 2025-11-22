@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container" style="background-image:url('{{ url_for('static', filename='images/login-bg.jpg') }}');">
+  <div class="glass">
+    <h2>Welcome back 🐾</h2>
+    <p class="subtitle">Login to find loving homes & partners for pets.</p>
+    <form method="post">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p style="margin-top:10px;font-size:0.8rem;">New to Janvar Junction?
+      <a href="{{ url_for('register') }}">Create an account</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

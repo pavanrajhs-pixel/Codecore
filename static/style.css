@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at top left, #1e3c72, #000);
+  color: #f5f5f5;
+}
+
+a { color: #74b9ff; text-decoration: none; }
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Navbar */
+nav {
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+nav .brand {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+nav .nav-links a {
+  margin-left: 16px;
+  font-size: 0.9rem;
+}
+
+/* Auth pages */
+.auth-container {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.glass {
+  background: rgba(0,0,0,0.65);
+  border-radius: 18px;
+  padding: 25px 28px;
+  width: 360px;
+  max-width: 95vw;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  backdrop-filter: blur(16px);
+}
+
+.glass h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.glass p.subtitle {
+  margin-top: 0;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 7px 0 12px 0;
+  background: rgba(0,0,0,0.4);
+  color: #f5f5f5;
+}
+
+input::placeholder {
+  color: #bdc3c7;
+  font-size: 0.8rem;
+}
+
+button, .btn {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  background: linear-gradient(135deg, #00cec9, #0984e3);
+  color: #fff;
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+/* Pet grid */
+.pet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.pet-card {
+  background: rgba(0,0,0,0.7);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pet-card::before {
+  content: "🐾";
+  position: absolute;
+  font-size: 60px;
+  opacity: 0.06;
+  right: -5px;
+  top: -5px;
+}
+
+.pet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.9);
+}
+
+.pet-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.pet-card h3 {
+  margin: 5px 0;
+}
+
+.pet-card p {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: #dfe6e9;
+}
+
+.pet-meta {
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  margin-right: 6px;
+}
+
+.badge.adopt {
+  background: rgba(46, 213, 115, 0.2);
+  border: 1px solid #2ed573;
+}
+
+.badge.mate {
+  background: rgba(255, 159, 67, 0.2);
+  border: 1px solid #ff9f43;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.actions .btn {
+  flex: 1;
+  font-size: 0.8rem;
+}
+
+.btn.adopt-btn {
+  background: linear-gradient(135deg, #00b894, #55efc4);
+}
+
+.btn.mate-btn {
+  background: linear-gradient(135deg, #fd9644, #e17055);
+}
+
+/* Simple hero */
+.hero {
+  padding: 40px 20px 10px 20px;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.hero-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

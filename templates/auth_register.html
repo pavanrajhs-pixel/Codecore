@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container" style="background-image:url('{{ url_for('static', filename='images/register-bg.jpg') }}');">
+  <div class="glass">
+    <h2>Create your account 🐶🐱</h2>
+    <p class="subtitle">Join the community of responsible pet parents.</p>
+    <form method="post">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <p style="margin-top:10px;font-size:0.8rem;">Already have an account?
+      <a href="{{ url_for('login') }}">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
